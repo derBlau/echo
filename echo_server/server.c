@@ -6,9 +6,7 @@
 
 int main(void)
 {
-  size_t bufferSize = 1024;
-  char buffer[bufferSize];
-
+  
   int port = 8000;
   
   struct in_addr ip;
@@ -52,9 +50,22 @@ int main(void)
   printf("A connection was established\n");
 
   while (1) {
-    recv(connection, buffer, bufferSize, 0);   
+    size_t bufferSize = 1024;
+    char buffer[bufferSize];
+
+    ssize_t data = recv(connection, buffer, bufferSize -1, 0);
+    if (data < 0) {
+      printf("There was an error. The connection to the client will be terminated.\n");
+      break;
+    }
+    if (data == 0) {
+      printf("The connection to the client has been lost.\n");
+      break;
+    }
+    buffer[bufferSize] = '\0';
     printf(">> %s\n", buffer);
   }
+
   close(connection);
   close(server);
 
