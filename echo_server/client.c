@@ -8,7 +8,9 @@
 
 void displayMenu(void);
 int sendMessage(int *client);
- 
+void printMessage(int *client);
+
+
 int main(void)
 {
   int port = 8000;
@@ -37,12 +39,16 @@ int main(void)
   }
   printf("A connection to the server was established on port %i.\n", port);
 
-  while (connectStatus == 0) {
+  while (1) {
     displayMenu();
-    if (sendMessage(&client) != 0) {
+    int rsp = sendMessage(&client);
+    if (rsp == 1) {
       break;
     }
-  }
+    if (rsp == 0) {
+      printMessage(&client);
+    }
+   }
   
   close(client);
   printf("The connection to the server was closed.\n");
@@ -67,7 +73,7 @@ int sendMessage(int *client)
   
   if (strlen(buffer) == 0) {
     printf("You cannot send an empty message\n");
-    return 0;
+    return -1;
     }
   if (strcmp("!q", buffer) == 0) {
     printf("The connection to the client will be closed\n");
@@ -76,4 +82,18 @@ int sendMessage(int *client)
   
   send(*client, buffer, strlen(buffer) + 1, 0);
   return 0;
+}
+
+void printMessage(int *client)
+{
+  size_t bufferSize = 1024;
+  char buffer[bufferSize];
+  ssize_t data = recv(*client, buffer, bufferSize - 1, 0);
+  if (data == 0) {
+    printf("Connection to the server was lost.\n");
+  }
+  if (data > 0) {
+    buffer[data] = '\0';
+    printf("server response >> %s\n", buffer);
+  }
 }

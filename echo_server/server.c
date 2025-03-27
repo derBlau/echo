@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include <string.h>
 #include <unistd.h>
 #include <sys/socket.h>
 #include <netinet/in.h>
@@ -53,7 +54,7 @@ int main(void)
     size_t bufferSize = 1024;
     char buffer[bufferSize];
 
-    ssize_t data = recv(connection, buffer, bufferSize -1, 0);
+    ssize_t data = recv(connection, buffer, bufferSize - 1, 0);
     if (data < 0) {
       printf("There was an error. The connection to the client will be terminated.\n");
       break;
@@ -64,6 +65,8 @@ int main(void)
     }
     buffer[bufferSize] = '\0';
     printf(">> %s\n", buffer);
+
+    send(connection, buffer, strlen(buffer) + 1, 0);
   }
 
   close(connection);
