@@ -6,8 +6,11 @@
 
 int main(void)
 {
-  int port = 8000;
+  size_t bufferSize = 1024;
+  char buffer[bufferSize];
 
+  int port = 8000;
+  
   struct in_addr ip;
   ip.s_addr = htonl(INADDR_ANY);
 
@@ -48,6 +51,10 @@ int main(void)
   }
   printf("A connection was established\n");
 
+  while (1) {
+    recv(connection, buffer, bufferSize, 0);   
+    printf(">> %s\n", buffer);
+  }
   close(connection);
   close(server);
 
