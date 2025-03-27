@@ -11,7 +11,6 @@ int sendMessage(int *client);
  
 int main(void)
 {
-  int isOnline = 0;
   int port = 8000;
   
   struct in_addr ip;
