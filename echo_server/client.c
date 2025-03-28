@@ -69,9 +69,10 @@ int sendMessage(int *client)
 
   printf(">> ");
   fgets(buffer, bufferSize, stdin);
-  buffer[strcspn(buffer, "\n")] = '\0';
+  size_t len = strcspn(buffer, "\n");
+  buffer[len] = '\0';
   
-  if (strlen(buffer) == 0) {
+  if (len == 0) {
     printf("You cannot send an empty message\n");
     return -1;
     }
@@ -80,7 +81,7 @@ int sendMessage(int *client)
     return 1;
   }
   
-  send(*client, buffer, strlen(buffer) + 1, 0);
+  send(*client, buffer, len + 1, 0);
   return 0;
 }
 
@@ -88,7 +89,7 @@ void printMessage(int *client)
 {
   size_t bufferSize = 1024;
   char buffer[bufferSize];
-  ssize_t data = recv(*client, buffer, bufferSize - 1, 0);
+  ssize_t data = recv(*client, buffer, bufferSize, 0);
   if (data == 0) {
     printf("Connection to the server was lost.\n");
   }

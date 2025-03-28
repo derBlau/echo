@@ -36,7 +36,7 @@ int main(void)
     close(server);
     return 1;
   }
-  int listening = listen(server, 0);
+  int listening = listen(server, 5);
   if (listening != 0) {
     perror("The server could not start listening for connections.\n");
     close(server);
@@ -54,7 +54,7 @@ int main(void)
     size_t bufferSize = 1024;
     char buffer[bufferSize];
 
-    ssize_t data = recv(connection, buffer, bufferSize - 1, 0);
+    ssize_t data = recv(connection, buffer, bufferSize, 0);
     if (data < 0) {
       printf("There was an error. The connection to the client will be terminated.\n");
       break;
@@ -63,7 +63,7 @@ int main(void)
       printf("The connection to the client has been lost.\n");
       break;
     }
-    buffer[bufferSize] = '\0';
+    buffer[data] = '\0';
     printf(">> %s\n", buffer);
 
     send(connection, buffer, strlen(buffer) + 1, 0);
